@@ -27,7 +27,7 @@ type SignedDetails struct {
 var userCollection *mongo.Collection = database.OpenCollection(database.CLient, "user")
 var SECRET_KEY string = os.Getenv("SECRET_KEY")
 
-func GenerateAllTokens(email string, first_name string, last_name string, user_type string, user_id string) (signedToken string, signedRefreshToken string, err error) {
+func GenerateAllTokens(email string, first_name string, last_name string, user_type string, user_id string) (signedToken string, signedRefreshToken string, er error) {
 	claims := &SignedDetails{
 		Email:      email,
 		First_name: first_name,
@@ -46,9 +46,11 @@ func GenerateAllTokens(email string, first_name string, last_name string, user_t
 	}
 
 	//create encrypted token
-	token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(SECRET_KEY))
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodES256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	fmt.Println(SECRET_KEY)
 	if err != nil {
+		fmt.Println("Could not create tokens!!!")
 		log.Panic(err)
 		return
 	}
